@@ -178,19 +178,25 @@ public struct Scheme: Equatable {
             public var parallelizable: Bool
             public var skipped: Bool
             public var skippedTests: [String]
+            public var preActions: [Scheme.ExecutionAction]
+            public var postActions: [Scheme.ExecutionAction]
 
             public init(
                 targetReference: TargetReference,
                 randomExecutionOrder: Bool = randomExecutionOrderDefault,
                 parallelizable: Bool = parallelizableDefault,
                 skipped: Bool = false,
-                skippedTests: [String] = []
+                skippedTests: [String] = [],
+                preActions: [Scheme.ExecutionAction] = [],
+                postActions: [Scheme.ExecutionAction] = []
             ) {
                 self.targetReference = targetReference
                 self.randomExecutionOrder = randomExecutionOrder
                 self.parallelizable = parallelizable
                 self.skipped = skipped
                 self.skippedTests = skippedTests
+                self.preActions = preActions
+                self.postActions = postActions
             }
 
             public init(stringLiteral value: String) {
@@ -200,6 +206,8 @@ public struct Scheme: Equatable {
                     parallelizable = false
                     skipped = false
                     skippedTests = []
+                    preActions = []
+                    postActions = []
                 } catch {
                     fatalError(SpecParsingError.invalidTargetReference(value).description)
                 }
@@ -495,6 +503,8 @@ extension Scheme.Test.TestTarget: JSONObjectConvertible {
         parallelizable = jsonDictionary.json(atKeyPath: "parallelizable") ?? Scheme.Test.TestTarget.parallelizableDefault
         skipped = jsonDictionary.json(atKeyPath: "skipped") ?? false
         skippedTests = jsonDictionary.json(atKeyPath: "skippedTests") ?? []
+        preActions = jsonDictionary.json(atKeyPath: "preActions") ?? []
+        postActions = jsonDictionary.json(atKeyPath: "postActions") ?? []
     }
 }
 

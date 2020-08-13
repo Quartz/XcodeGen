@@ -203,12 +203,20 @@ public class SchemeGenerator {
         let launchVariables = scheme.run.flatMap { $0.environmentVariables.isEmpty ? nil : $0.environmentVariables }
         let profileVariables = scheme.profile.flatMap { $0.environmentVariables.isEmpty ? nil : $0.environmentVariables }
 
+        var testPreActions = scheme.test?.preActions.map(getExecutionAction) ?? []
+        if testPreActions.isEmpty {
+            testPreActions = scheme.test?.targets.flatMap({ $0.preActions }).map(getExecutionAction) ?? []
+        }
+        var testPostActions = scheme.test?.postActions.map(getExecutionAction) ?? []
+        if testPostActions.isEmpty {
+            testPostActions = scheme.test?.targets.flatMap({ $0.postActions }).map(getExecutionAction) ?? []
+        }
         let testAction = XCScheme.TestAction(
             buildConfiguration: scheme.test?.config ?? defaultDebugConfig.name,
             macroExpansion: buildableReference,
             testables: testables,
-            preActions: scheme.test?.preActions.map(getExecutionAction) ?? [],
-            postActions: scheme.test?.postActions.map(getExecutionAction) ?? [],
+            preActions: testPreActions,
+            postActions: testPostActions,
             selectedDebuggerIdentifier: (scheme.test?.debugEnabled ?? Scheme.Test.debugEnabledDefault) ? XCScheme.defaultDebugger : "",
             selectedLauncherIdentifier: (scheme.test?.debugEnabled ?? Scheme.Test.debugEnabledDefault) ? XCScheme.defaultLauncher : "Xcode.IDEFoundation.Launcher.PosixSpawn",
             shouldUseLaunchSchemeArgsEnv: scheme.test?.shouldUseLaunchSchemeArgsEnv ?? true,

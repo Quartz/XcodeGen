@@ -797,6 +797,8 @@ A multiline script can be written using the various YAML multiline methods, for 
 - [ ] **randomExecutionOrder**: **Bool** - Whether to run tests in a random order. Defaults to false
 - [ ] **skipped**: **Bool** - Whether to skip all of the test target tests. Defaults to false
 - [ ] **skippedTests**: **[String]** - List of tests in the test target to skip. Defaults to empty.
+- [ ] **preActions**: **[[Execution Action](#execution-action)]** - Scripts that are run *before* the test action
+- [ ] **postActions**: **[[Execution Action](#execution-action)]** - Scripts that are run *after* the test action
 
 ### Archive Action
 
